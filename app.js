@@ -83,7 +83,7 @@ app.post("/login/", async (request, response) => {
   const dbUser = await db.get(selectUserQuery);
   if (dbUser === undefined) {
     response.status(400);
-    response.send("Invalid User");
+    response.send(JSON.stringify("Invalid User"));
   } else {
     const isPasswordMatched = await bcrypt.compare(password, dbUser.password);
     if (isPasswordMatched === true) {
@@ -94,7 +94,7 @@ app.post("/login/", async (request, response) => {
       response.send({ jwtToken });
     } else {
       response.status(400);
-      response.send("Invalid Password");
+      response.send(JSON.stringify("Invalid Password"));
     }
   }
 });
@@ -111,18 +111,18 @@ app.put("/change-password", async (request, response) => {
         const updatePassword = `update user set password="${hashedPassword}" where username="${username}";`;
         await db.run(updatePassword);
         response.status(200);
-        response.send("Password updated");
+        response.send(JSON.stringify("Password updated"));
       } else {
         response.status(400);
-        response.send("Password is too short");
+        response.send(JSON.stringify("Password is too short"));
       }
     } else {
       response.status(400);
-      response.send("Invalid current password");
+      response.send(JSON.stringify("Invalid current password"));
     }
   } else {
     response.status(400);
-    response.send(`Invalid user`);
+    response.send(JSON.stringify("Invalid user"));
   }
 });
 
@@ -148,7 +148,7 @@ app.post('/forgot_password', async (request, response) => {
       console.log(error);
     } else {
       console.log('Email sent: ' + email);
-      response.send(`Invalid user`);
+      response.send(JSON.stringify("Invalid user"));
     }
   });
 });
@@ -194,16 +194,16 @@ app.post("/register/", cors(), async (request, response) => {
                     }, 60000
                 )
           console.log('Email sent: ' + email);
-          response.send('Otp sent to ' + email);
+          response.send(JSON.stringify(`'Otp sent to ' + ${email}`));
         }
       });
     } else {
       response.status(400);
-      response.send("Password is too short");
+      response.send(JSON.stringify("Password is too short"));
     }
   } else {
     response.status(400);
-    response.send("User already exists");
+    response.send(JSON.stringify("User already exists"));
   }
 });
 
@@ -219,10 +219,10 @@ app.post("/verify", cors(), async (request, response) => {
       );`;
       await db.run(createUserQuery);
       response.status(200);
-      response.send("User created successfully");
+      response.send(JSON.stringify("User created successfully"));
     } else {
       response.status(400);
-      response.send("Please Enter correct Otp");
+      response.send(JSON.stringify("Please Enter correct Otp"));
     }
   
 });
